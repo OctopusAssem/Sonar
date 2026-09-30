@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.assem.sonar.data.AppRepository
+import com.assem.sonar.data.FreezeManager
 import com.assem.sonar.data.NetPolicy
 import com.assem.sonar.data.UpdateChecker
 import com.assem.sonar.model.AppEntry
@@ -26,6 +27,9 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     private val repo = AppRepository(app)
     private val checker = UpdateChecker(app)
     private val rootChecker = RootChecker(app)
+
+    /** Localized context that follows the in-app language choice. */
+    private val localized get() = LocaleHelper.wrap(getApplication())
 
     var apps by mutableStateOf<List<AppEntry>>(emptyList())
         private set
@@ -55,6 +59,18 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     var backgroundCheck by mutableStateOf(WorkScheduler.isEnabled(app))
         private set
     var language by mutableStateOf(LocaleHelper.get(app))
+        private set
+
+    /** null = not checked yet. */
+    var rootAvailable by mutableStateOf<Boolean?>(null)
+        private set
+    var rootChecking by mutableStateOf(false)
+        private set
+
+    /** Package currently being frozen or unfrozen. */
+    var freezeBusy by mutableStateOf<String?>(null)
+        private set
+    var message by mutableStateOf<String?>(null)
         private set
 
     fun load() {
@@ -111,9 +127,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         val entry = apps.firstOrNull { it.info.packageName == packageName } ?: return
         setUpdate(packageName, UpdateState.Checking)
         viewModelScope.launch {
-            val state = checker.check(
-                entry.info.packageName, entry.info.versionName, entry.info.versionCode,
-            )
+            val state = checker.check(entry.info.packageName, entry.info.lastUpdateTime)
             setUpdate(packageName, state)
         }
     }
@@ -126,9 +140,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             var done = 0
             for (entry in targets) {
                 setUpdate(entry.info.packageName, UpdateState.Checking)
-                val state = checker.check(
-                    entry.info.packageName, entry.info.versionName, entry.info.versionCode,
-                )
+                val state = checker.check(entry.info.packageName, entry.info.lastUpdateTime)
                 setUpdate(entry.info.packageName, state)
                 done++
                 checkProgress = "$done / ${targets.size}"
@@ -145,6 +157,65 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             rootResults = withContext(Dispatchers.IO) { rootChecker.runAll() }
             rootRunning = false
         }
+    }
+
+    fun checkRootAccess() {
+        if (rootChecking) return
+        viewModelScope.launch {
+            rootChecking = true
+            rootAvailable = withContext(Dispatchers.IO) { FreezeManager.hasRoot() }
+            rootChecking = false
+        }
+    }
+
+    fun freeze(entry: AppEntry) = changeFrozenState(entry, freeze = true)
+
+    fun unfreeze(entry: AppEntry) = changeFrozenState(entry, freeze = false)
+
+    private fun changeFrozenState(entry: AppEntry, freeze: Boolean) {
+        val pkg = entry.info.packageName
+        if (pkg == getApplication<Application>().packageName) {
+            message = localized.getString(R.string.freeze_cannot_self)
+            return
+        }
+        if (freezeBusy != null) return
+        viewModelScope.launch {
+            freezeBusy = pkg
+            val result = withContext(Dispatchers.IO) {
+                if (freeze) FreezeManager.freeze(pkg) else FreezeManager.unfreeze(pkg)
+            }
+            freezeBusy = null
+            message = when (result) {
+                is FreezeManager.Result.Success -> localized.getString(
+                    if (freeze) R.string.freeze_success else R.string.unfreeze_success,
+                    entry.info.label,
+                )
+                is FreezeManager.Result.NoRoot -> localized.getString(R.string.freeze_needs_root)
+                is FreezeManager.Result.Failure -> localized.getString(
+                    if (freeze) R.string.freeze_failed else R.string.unfreeze_failed,
+                    entry.info.label,
+                    result.detail,
+                )
+            }
+            if (result is FreezeManager.Result.Success) {
+                rootAvailable = true
+                reload()
+            }
+        }
+    }
+
+    fun clearMessage() {
+        message = null
+    }
+
+    private suspend fun reload() {
+        val list = withContext(Dispatchers.IO) { repo.loadInstalledApps() }
+        val usage = if (usageAccess) {
+            withContext(Dispatchers.IO) { repo.loadUsage(usageDays) }
+        } else {
+            emptyMap()
+        }
+        apps = list.map { AppEntry(it, usage[it.packageName]) }
     }
 
     fun updateInternetAllowed(allowed: Boolean) {

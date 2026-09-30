@@ -25,9 +25,10 @@ sealed interface UpdateState {
     data object Unknown : UpdateState
     data object Checking : UpdateState
     data object UpToDate : UpdateState
+
+    /** Google Play lists a newer update date than the copy installed on this device. */
     data class Available(
-        val latestVersionName: String,
-        val latestVersionCode: Long?,
+        val playUpdatedOn: Long,
         val source: String,
     ) : UpdateState
 

@@ -17,11 +17,16 @@ you can open it, jump to its system info screen, open it on Google Play, or unin
   usage time or size.
 - **App details** — version and version code, install date, last update (absolute + relative),
   APK size, UID, foreground usage time and last used time.
-- **Manage apps** — open, system app info, Google Play page, uninstall (through the official
-  system confirmation screen).
-- **Update checks** — compares each user app with the newest release on Google Play, falling back
-  to Aptoide. Check everything in-app, or enable an optional background check every 12 hours with
-  a notification when updates are found.
+- **Manage apps** — open, system app info, uninstall (through the official system confirmation
+  screen). The store button always opens **Google Play only**, never another store that happens to
+  be installed on the phone.
+- **Freeze apps (root)** — disable an app without uninstalling it, keeping its data, and unfreeze
+  it later. Requires root. Sonar asks your root manager for permission and shows a warning before
+  freezing any system app.
+- **Update checks (Google Play only)** — reads each user app's public Google Play listing and
+  compares its update date with the copy installed on your device. No other store is used. Check
+  everything in-app, or enable an optional background check every 12 hours with a notification
+  when updates are found.
 - **Root scan** — a simple, local check: `su` binaries, running the root command, root manager
   packages, Magisk / KernelSU / APatch paths, build properties and SELinux state.
 - **Language** — full English and Arabic interface; follow the system language or pick one in
@@ -54,10 +59,13 @@ apksigner sign --ks your.jks --out Sonar-1.0.apk Sonar-aligned.apk
 ```
 
 ### Notes
+- Freezing runs `pm disable-user` / `pm enable` through a root shell. Android gives ordinary apps
+  no way to disable another package, so without root the freeze button tells you root is needed.
+- Google Play no longer publishes an app's version number on its public listing, so Sonar compares
+  the listing's **“Updated on”** date with the last-update date of the copy on your device, leaving
+  one day of slack for time zones.
 - Root detection is indicative only. Advanced hiding can conceal every indicator it looks for.
   Sonar does not bypass or defeat any security or integrity check.
-- Update checks scrape public store pages, so they can fail when a store blocks the request; the
-  app reports that instead of guessing.
 
 ---
 
@@ -72,9 +80,13 @@ apksigner sign --ks your.jks --out Sonar-1.0.apk Sonar-aligned.apk
   آخر تحديث أو وقت الاستخدام أو الحجم.
 - **تفاصيل التطبيق** — الإصدار ورقمه، تاريخ التثبيت، آخر تحديث (مطلق ونسبي)، حجم ملف APK،
   معرّف المستخدم، ووقت الاستخدام وآخر استخدام.
-- **إدارة التطبيقات** — فتح، معلومات النظام، صفحة متجر جوجل، وإلغاء التثبيت من شاشة تأكيد النظام.
-- **فحص التحديثات** — يقارن كل تطبيق مستخدم بأحدث إصدار على Google Play ثم Aptoide كبديل. فحص
-  فوري داخل التطبيق، أو فحص خلفي اختياري كل 12 ساعة مع إشعار عند وجود تحديث.
+- **إدارة التطبيقات** — فتح، معلومات النظام، وإلغاء التثبيت من شاشة تأكيد النظام. زر المتجر يفتح
+  **Google Play فقط**، ولا يفتح أي متجر آخر مثبّت على الهاتف.
+- **تجميد التطبيقات (يحتاج root)** — تعطيل التطبيق بدون حذفه مع بقاء بياناته، وإلغاء تجميده لاحقًا.
+  يحتاج صلاحية root، ويطلبها سونار من مدير الروت، ويعرض تحذيرًا قبل تجميد أي تطبيق نظام.
+- **فحص التحديثات (من Google Play فقط)** — يقرأ صفحة كل تطبيق مستخدم على Google Play ويقارن تاريخ
+  التحديث هناك بتاريخ النسخة على جهازك. لا يُستخدم أي متجر آخر. فحص فوري داخل التطبيق، أو فحص
+  خلفي اختياري كل 12 ساعة مع إشعار عند وجود تحديث.
 - **فحص الروت** — فحص محلي بسيط: ملفات `su`، تنفيذ أمر الجذر، حزم إدارة الروت، مسارات
   Magisk / KernelSU / APatch، خصائص البناء، وحالة SELinux.
 - **اللغة** — واجهة كاملة بالعربية والإنجليزية، تتبع لغة النظام أو تختارها من الإعدادات.
@@ -91,10 +103,12 @@ apksigner sign --ks your.jks --out Sonar-1.0.apk Sonar-aligned.apk
 - عمود وقت الاستخدام يحتاج صلاحية «الوصول لبيانات الاستخدام» من إعدادات النظام.
 
 ### ملاحظات
+- التجميد ينفّذ `pm disable-user` و`pm enable` عبر صدفة root. أندرويد لا يمنح التطبيقات العادية أي
+  طريقة لتعطيل حزمة أخرى، لذلك بدون root يخبرك زر التجميد أن الصلاحية مطلوبة.
+- Google Play لم يعد ينشر رقم إصدار التطبيق في صفحته العامة، لذلك يقارن سونار تاريخ **«Updated on»**
+  في الصفحة بتاريخ آخر تحديث للنسخة على جهازك، مع ترك يوم واحد كهامش للفروق الزمنية.
 - كشف الروت إرشادي فقط؛ أنظمة الإخفاء المتقدمة قد تُخفي كل العلامات التي يبحث عنها التطبيق.
   ولا يتجاوز «سونار» أي فحص أمني أو سلامة.
-- فحص التحديثات يقرأ صفحات المتاجر العامة، لذلك قد يفشل إذا حجب المتجر الطلب، وحينها يخبرك
-  التطبيق بذلك بدلًا من التخمين.
 
 ---
 

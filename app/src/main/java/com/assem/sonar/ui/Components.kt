@@ -107,15 +107,18 @@ fun AppRow(entry: AppEntry, fallbackIcon: ImageVector, onClick: () -> Unit) {
                     if (info.isSystem) {
                         Pill(stringResource(R.string.badge_system), MaterialTheme.colorScheme.tertiary)
                     }
+                    if (!info.isEnabled) {
+                        Pill(stringResource(R.string.badge_frozen), MaterialTheme.colorScheme.error)
+                    }
                     entry.usage?.let {
                         Pill(
                             formatDuration(context, it.totalTimeInForegroundMs),
                             MaterialTheme.colorScheme.primary,
                         )
                     }
-                    when (val u = entry.update) {
+                    when (entry.update) {
                         is UpdateState.Available -> Pill(
-                            stringResource(R.string.badge_update, u.latestVersionName),
+                            stringResource(R.string.badge_update),
                             MaterialTheme.colorScheme.error,
                         )
                         UpdateState.Checking -> Pill(

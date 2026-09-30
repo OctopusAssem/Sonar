@@ -35,39 +35,64 @@
     <string name="open_settings">فتح الإعدادات</string>
 
     <string name="badge_system">نظام</string>
-    <string name="badge_update">تحديث %1$s</string>
+    <string name="badge_frozen">مجمّد</string>
+    <string name="badge_update">تحديث</string>
     <string name="badge_checking">يفحص…</string>
     <string name="badge_uptodate">محدّث</string>
 
     <string name="label_version">الإصدار</string>
     <string name="label_install_date">تاريخ التثبيت</string>
-    <string name="label_last_update">آخر تحديث</string>
+    <string name="label_last_update">آخر تحديث على الجهاز</string>
     <string name="label_apk_size">حجم ملف APK</string>
     <string name="label_type">النوع</string>
     <string name="label_uid">معرّف المستخدم (UID)</string>
     <string name="label_usage_time">وقت الاستخدام (%1$d يوم)</string>
     <string name="label_last_used">آخر استخدام</string>
+    <string name="label_play_updated">تاريخ التحديث على Google Play</string>
+    <string name="label_state">الحالة</string>
     <string name="type_system">تطبيق نظام</string>
     <string name="type_user">تطبيق مستخدم</string>
+    <string name="state_frozen">مجمّد (معطّل)</string>
+    <string name="state_active">نشط</string>
 
-    <string name="update_available">يوجد تحديث: %1$s</string>
-    <string name="source_label">المصدر: %1$s</string>
-    <string name="up_to_date_message">التطبيق محدّث حسب المصدر المتاح.</string>
+    <string name="update_available_title">يوجد تحديث على Google Play</string>
+    <string name="update_available_body">جوجل بلاي يقول إن آخر تحديث للتطبيق كان بتاريخ %1$s، وهو أحدث من النسخة عندك (%2$s).</string>
+    <string name="up_to_date_message">النسخة عندك مطابقة لما هو متاح على Google Play.</string>
 
     <string name="action_check_update">فحص التحديث</string>
-    <string name="action_open">فتح</string>
+    <string name="action_open_app">فتح التطبيق</string>
     <string name="action_system_info">معلومات النظام</string>
-    <string name="action_google_play">متجر جوجل</string>
+    <string name="action_google_play">Google Play</string>
     <string name="action_uninstall">إلغاء التثبيت</string>
+    <string name="action_freeze">تجميد</string>
+    <string name="action_unfreeze">إلغاء التجميد</string>
 
     <string name="uninstall_dialog_title">إلغاء التثبيت</string>
     <string name="uninstall_dialog_body">سيتم فتح شاشة إلغاء تثبيت «%1$s» من النظام.</string>
     <string name="dialog_continue">متابعة</string>
     <string name="dialog_cancel">إلغاء</string>
 
+    <!-- Freeze -->
+    <string name="freeze_dialog_title">تجميد التطبيق</string>
+    <string name="freeze_dialog_body">سيتم تعطيل «%1$s» مؤقتًا مع بقاء بياناته على الجهاز، ويمكنك إلغاء التجميد في أي وقت.</string>
+    <string name="freeze_warning_system">⚠️ تحذير: تجميد تطبيقات النظام قد يعطّل بعض خصائص الجهاز، أو يمنع الهاتف من الإقلاع.</string>
+    <string name="freeze_warning_critical">⚠️ هذا مكوّن أساسي في النظام. تجميده قد يجعل الجهاز غير قابل للاستخدام. تابع فقط إذا كنت متأكدًا.</string>
+    <string name="unfreeze_dialog_title">إلغاء التجميد</string>
+    <string name="unfreeze_dialog_body">سيتم تشغيل «%1$s» مرة أخرى والعمل بشكل طبيعي.</string>
+    <string name="freeze_confirm">تجميد</string>
+    <string name="unfreeze_confirm">إلغاء التجميد</string>
+    <string name="freeze_needs_root">التجميد يحتاج صلاحية root. امنح الصلاحية لتطبيق سونار من مدير الروت (KernelSU أو Magisk أو APatch).</string>
+    <string name="freeze_checking_root">جارٍ التحقق من صلاحية root…</string>
+    <string name="freeze_working">جارٍ التنفيذ…</string>
+    <string name="freeze_success">تم تجميد «%1$s».</string>
+    <string name="unfreeze_success">تم إلغاء تجميد «%1$s».</string>
+    <string name="freeze_failed">تعذّر تجميد «%1$s»: %2$s</string>
+    <string name="unfreeze_failed">تعذّر إلغاء تجميد «%1$s»: %2$s</string>
+    <string name="freeze_cannot_self">لا يمكن لسونار تجميد نفسه.</string>
+
     <!-- Updates screen -->
     <string name="updates_title">فحص التحديثات</string>
-    <string name="updates_body">يقارن إصدار كل تطبيق مستخدم مع أحدث إصدار على Google Play (ثم Aptoide كبديل). لا تُفحص تطبيقات النظام.</string>
+    <string name="updates_body">من Google Play فقط. يقرأ سونار صفحة كل تطبيق مستخدم على Google Play ويقارن تاريخ التحديث هناك بتاريخ النسخة على جهازك. لا يُستخدم أي متجر آخر.</string>
     <string name="updates_checking_progress">جارٍ الفحص %1$s</string>
     <string name="updates_check_all">فحص الكل</string>
     <string name="updates_checked_count">تم فحص %1$d تطبيق</string>
@@ -119,6 +144,13 @@
     <string name="settings_period_title">فترة حساب الاستخدام</string>
     <string name="settings_days">%1$d يوم</string>
 
+    <string name="settings_root_title">صلاحية root</string>
+    <string name="settings_root_granted">صلاحية root: ممنوحة ✓</string>
+    <string name="settings_root_denied">صلاحية root: غير ممنوحة</string>
+    <string name="settings_root_unknown">صلاحية root: لم يتم التحقق بعد</string>
+    <string name="settings_root_body">تُحتاج فقط لتجميد التطبيقات وإلغاء تجميدها، ولا يستخدمها التطبيق في أي شيء آخر.</string>
+    <string name="settings_root_request">التحقق من صلاحية root</string>
+
     <string name="settings_notifications_title">تنبيهات التحديث</string>
     <string name="settings_notif_granted">إشعارات النظام: مسموحة ✓</string>
     <string name="settings_notif_denied">إشعارات النظام: مرفوضة</string>
@@ -129,7 +161,7 @@
 
     <string name="settings_internet_title">الاتصال بالإنترنت</string>
     <string name="settings_internet_allow">السماح بالاتصال بالإنترنت</string>
-    <string name="settings_internet_body_on">قد يتصل التطبيق بـ Google Play أو Aptoide للبحث عن التحديثات.</string>
+    <string name="settings_internet_body_on">قد يتصل التطبيق بـ Google Play للبحث عن التحديثات.</string>
     <string name="settings_internet_body_off">لا يقوم التطبيق بأي اتصال بالشبكة إطلاقًا، وفحص التحديثات متوقف.</string>
 
     <string name="settings_language_title">اللغة</string>
@@ -152,8 +184,7 @@
 
     <!-- Update sources -->
     <string name="source_play">Google Play</string>
-    <string name="source_aptoide">Aptoide</string>
-    <string name="update_source_unreachable">تعذّر الوصول لمصدر التحديث</string>
+    <string name="update_source_unreachable">تعذّر الوصول إلى Google Play</string>
     <string name="update_internet_disabled">الاتصال بالإنترنت متوقف</string>
 
     <!-- Formatting -->

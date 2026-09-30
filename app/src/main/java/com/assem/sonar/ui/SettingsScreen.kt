@@ -99,6 +99,39 @@ fun SettingsScreen(vm: AppViewModel) {
             }
         }
 
+        SettingsCard(stringResource(R.string.settings_root_title)) {
+            Text(
+                stringResource(
+                    when (vm.rootAvailable) {
+                        true -> R.string.settings_root_granted
+                        false -> R.string.settings_root_denied
+                        null -> R.string.settings_root_unknown
+                    },
+                ),
+                color = when (vm.rootAvailable) {
+                    true -> MaterialTheme.colorScheme.primary
+                    false -> MaterialTheme.colorScheme.error
+                    null -> MaterialTheme.colorScheme.onSurfaceVariant
+                },
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.settings_root_body),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (vm.rootChecking) {
+                Text(
+                    stringResource(R.string.freeze_checking_root),
+                    style = MaterialTheme.typography.labelMedium,
+                )
+            } else {
+                OutlinedButton(onClick = { vm.checkRootAccess() }) {
+                    Text(stringResource(R.string.settings_root_request))
+                }
+            }
+        }
+
         SettingsCard(stringResource(R.string.settings_usage_title)) {
             Text(
                 stringResource(

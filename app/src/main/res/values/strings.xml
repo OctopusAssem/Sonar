@@ -31,39 +31,64 @@
     <string name="open_settings">Open settings</string>
 
     <string name="badge_system">System</string>
-    <string name="badge_update">Update %1$s</string>
+    <string name="badge_frozen">Frozen</string>
+    <string name="badge_update">Update</string>
     <string name="badge_checking">Checking…</string>
     <string name="badge_uptodate">Up to date</string>
 
     <string name="label_version">Version</string>
     <string name="label_install_date">Install date</string>
-    <string name="label_last_update">Last update</string>
+    <string name="label_last_update">Last update on this device</string>
     <string name="label_apk_size">APK file size</string>
     <string name="label_type">Type</string>
     <string name="label_uid">User ID (UID)</string>
     <string name="label_usage_time">Usage (%1$d days)</string>
     <string name="label_last_used">Last used</string>
+    <string name="label_play_updated">Google Play update date</string>
+    <string name="label_state">State</string>
     <string name="type_system">System app</string>
     <string name="type_user">User app</string>
+    <string name="state_frozen">Frozen (disabled)</string>
+    <string name="state_active">Active</string>
 
-    <string name="update_available">Update available: %1$s</string>
-    <string name="source_label">Source: %1$s</string>
-    <string name="up_to_date_message">This app is up to date on the available source.</string>
+    <string name="update_available_title">Update available on Google Play</string>
+    <string name="update_available_body">Google Play lists this app as updated on %1$s, newer than your copy (%2$s).</string>
+    <string name="up_to_date_message">Your copy is up to date with Google Play.</string>
 
     <string name="action_check_update">Check update</string>
-    <string name="action_open">Open</string>
+    <string name="action_open_app">Open app</string>
     <string name="action_system_info">System info</string>
     <string name="action_google_play">Google Play</string>
     <string name="action_uninstall">Uninstall</string>
+    <string name="action_freeze">Freeze</string>
+    <string name="action_unfreeze">Unfreeze</string>
 
     <string name="uninstall_dialog_title">Uninstall</string>
     <string name="uninstall_dialog_body">The system uninstall screen for “%1$s” will open.</string>
     <string name="dialog_continue">Continue</string>
     <string name="dialog_cancel">Cancel</string>
 
+    <!-- Freeze -->
+    <string name="freeze_dialog_title">Freeze app</string>
+    <string name="freeze_dialog_body">“%1$s” will be disabled temporarily. Its data stays on the device and you can unfreeze it at any time.</string>
+    <string name="freeze_warning_system">⚠️ Warning: freezing system apps can break device features, or stop the phone from booting.</string>
+    <string name="freeze_warning_critical">⚠️ This is an essential system component. Freezing it can make the device unusable. Continue only if you are certain.</string>
+    <string name="unfreeze_dialog_title">Unfreeze app</string>
+    <string name="unfreeze_dialog_body">“%1$s” will be enabled again and work normally.</string>
+    <string name="freeze_confirm">Freeze</string>
+    <string name="unfreeze_confirm">Unfreeze</string>
+    <string name="freeze_needs_root">Freezing needs root access. Grant root to Sonar from your root manager (KernelSU, Magisk, APatch).</string>
+    <string name="freeze_checking_root">Checking root access…</string>
+    <string name="freeze_working">Working…</string>
+    <string name="freeze_success">“%1$s” was frozen.</string>
+    <string name="unfreeze_success">“%1$s” was unfrozen.</string>
+    <string name="freeze_failed">Could not freeze “%1$s”: %2$s</string>
+    <string name="unfreeze_failed">Could not unfreeze “%1$s”: %2$s</string>
+    <string name="freeze_cannot_self">Sonar cannot freeze itself.</string>
+
     <!-- Updates screen -->
     <string name="updates_title">Update check</string>
-    <string name="updates_body">Compares each user app’s version with the latest release on Google Play (Aptoide is used as a fallback). System apps are not checked.</string>
+    <string name="updates_body">Google Play only. Sonar reads the public Google Play listing of each user app and compares its update date with the copy on your device. No other store is used.</string>
     <string name="updates_checking_progress">Checking %1$s</string>
     <string name="updates_check_all">Check all</string>
     <string name="updates_checked_count">Checked %1$d apps</string>
@@ -115,6 +140,13 @@
     <string name="settings_period_title">Usage period</string>
     <string name="settings_days">%1$d days</string>
 
+    <string name="settings_root_title">Root access</string>
+    <string name="settings_root_granted">Root access: granted ✓</string>
+    <string name="settings_root_denied">Root access: not granted</string>
+    <string name="settings_root_unknown">Root access: not checked yet</string>
+    <string name="settings_root_body">Needed only to freeze and unfreeze apps. Nothing else uses root.</string>
+    <string name="settings_root_request">Check root access</string>
+
     <string name="settings_notifications_title">Update notifications</string>
     <string name="settings_notif_granted">System notifications: allowed ✓</string>
     <string name="settings_notif_denied">System notifications: denied</string>
@@ -125,7 +157,7 @@
 
     <string name="settings_internet_title">Internet connection</string>
     <string name="settings_internet_allow">Allow internet access</string>
-    <string name="settings_internet_body_on">The app may contact Google Play or Aptoide to look for updates.</string>
+    <string name="settings_internet_body_on">The app may contact Google Play to look for updates.</string>
     <string name="settings_internet_body_off">The app makes no network requests at all. Update checks are disabled.</string>
 
     <string name="settings_language_title">Language</string>
@@ -148,8 +180,7 @@
 
     <!-- Update sources -->
     <string name="source_play">Google Play</string>
-    <string name="source_aptoide">Aptoide</string>
-    <string name="update_source_unreachable">Could not reach the update source</string>
+    <string name="update_source_unreachable">Could not reach Google Play</string>
     <string name="update_internet_disabled">Internet access is turned off</string>
 
     <!-- Formatting -->

@@ -29,10 +29,10 @@ class UpdateCheckWorker(
         val available = ArrayList<String>()
         for (app in apps) {
             val state = runCatching {
-                checker.check(app.packageName, app.versionName, app.versionCode)
+                checker.check(app.packageName, app.lastUpdateTime)
             }.getOrNull()
             if (state is UpdateState.Available) {
-                available += "${app.label} → ${state.latestVersionName}"
+                available += app.label
             }
             delay(400)
         }

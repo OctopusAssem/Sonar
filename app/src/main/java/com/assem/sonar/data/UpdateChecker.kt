@@ -7,16 +7,32 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
+/**
+ * Checks for updates against **Google Play only**.
+ *
+ * Google no longer exposes the app version on the public listing and its internal
+ * batchexecute endpoint refuses anonymous callers, so Sonar uses the one dated fact the
+ * public listing does publish: "Updated on". If Google Play lists an update date that is
+ * clearly newer than the copy installed on this device, an update is reported.
+ */
 class UpdateChecker(private val context: Context) {
 
     private val ua = "Mozilla/5.0 (Linux; Android 13; SM-S911B) AppleWebKit/537.36 " +
         "(KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
 
+    private val updatedOn = Regex(
+        "Updated on.{0,200}?([A-Z][a-z]{2} \\d{1,2}, 20\\d\\d)",
+        RegexOption.DOT_MATCHES_ALL,
+    )
+    private val dateFmt = SimpleDateFormat("MMM d, yyyy", Locale.US)
+
     suspend fun check(
         packageName: String,
-        localVersionName: String,
-        localVersionCode: Long,
+        installedLastUpdateTime: Long,
     ): UpdateState = withContext(Dispatchers.IO) {
         if (!NetPolicy.isAllowed(context)) {
             return@withContext UpdateState.Failed(
@@ -24,60 +40,33 @@ class UpdateChecker(private val context: Context) {
             )
         }
 
-        val play = runCatching { playStore(packageName) }.getOrNull()
-        if (play?.first != null) {
-            return@withContext decide(
-                localVersionName, localVersionCode,
-                play.first!!, play.second, context.getString(R.string.source_play),
+        val playDate = runCatching { playUpdatedOn(packageName) }.getOrNull()
+            ?: return@withContext UpdateState.Failed(
+                context.getString(R.string.update_source_unreachable),
             )
-        }
-        val apto = runCatching { aptoide(packageName) }.getOrNull()
-        if (apto?.first != null) {
-            return@withContext decide(
-                localVersionName, localVersionCode,
-                apto.first!!, apto.second, context.getString(R.string.source_aptoide),
-            )
-        }
-        UpdateState.Failed(context.getString(R.string.update_source_unreachable))
-    }
 
-    private fun decide(
-        localName: String,
-        localCode: Long,
-        storeName: String,
-        storeCode: Long?,
-        source: String,
-    ): UpdateState {
-        val newer = if (storeCode != null && storeCode > 0L) {
-            storeCode > localCode
+        val playDay = playDate / DAY_MS
+        val localDay = installedLastUpdateTime / DAY_MS
+
+        // One day of slack absorbs the store's timezone; anything beyond that is a real update.
+        if (playDay > localDay + 1) {
+            UpdateState.Available(playDate, context.getString(R.string.source_play))
         } else {
-            isNewer(storeName, localName)
+            UpdateState.UpToDate
         }
-        return if (newer) UpdateState.Available(storeName, storeCode, source)
-        else UpdateState.UpToDate
     }
 
-    /** Returns (versionName, versionCode?) or (null, null) when not found. */
-    private fun playStore(packageName: String): Pair<String?, Long?> {
-        val url = "https://play.google.com/store/apps/details?id=$packageName&hl=en&gl=us"
-        val body = httpGet(url) ?: return null to null
+    /** Date of the "Updated on" field on the public Google Play listing, or null. */
+    private fun playUpdatedOn(packageName: String): Long? {
+        val url = "https://play.google.com/store/apps/details?id=$packageName&hl=en&gl=US"
+        val body = httpGet(url) ?: return null
         if (body.contains("requested URL was not found", ignoreCase = true) ||
             body.contains("We're sorry", ignoreCase = true)
         ) {
-            return null to null
+            return null
         }
-        val m = Regex("\\[\\[\\[\"([0-9][0-9.]*)\"\\]\\]\\]").find(body)
-        return (m?.groupValues?.get(1)) to null
-    }
-
-    /** Returns (versionName, versionCode?) or (null, null) when not found. */
-    private fun aptoide(packageName: String): Pair<String?, Long?> {
-        val url = "https://ws75.aptoide.com/api/7/apps/search?query=$packageName&limit=1"
-        val body = httpGet(url) ?: return null to null
-        if (!body.contains("\"package\":\"$packageName\"")) return null to null
-        val name = Regex("\"vername\":\"([^\"]+)\"").find(body)?.groupValues?.get(1)
-        val code = Regex("\"vercode\":(\\d+)").find(body)?.groupValues?.get(1)?.toLongOrNull()
-        return name to code
+        val raw = updatedOn.find(body)?.groupValues?.get(1) ?: return null
+        return runCatching { dateFmt.parse(raw)?.time }.getOrNull()
     }
 
     private fun httpGet(url: String): String? {
@@ -86,7 +75,7 @@ class UpdateChecker(private val context: Context) {
             conn = (URL(url).openConnection() as HttpURLConnection).apply {
                 requestMethod = "GET"
                 connectTimeout = 12_000
-                readTimeout = 12_000
+                readTimeout = 15_000
                 instanceFollowRedirects = true
                 setRequestProperty("User-Agent", ua)
                 setRequestProperty("Accept-Language", "en-US,en;q=0.9")
@@ -101,15 +90,7 @@ class UpdateChecker(private val context: Context) {
         }
     }
 
-    private fun isNewer(store: String, local: String): Boolean {
-        val a = store.split('.', '-', ' ').mapNotNull { it.toIntOrNull() }
-        val b = local.split('.', '-', ' ').mapNotNull { it.toIntOrNull() }
-        if (a.isEmpty() || b.isEmpty()) return false
-        for (i in 0 until maxOf(a.size, b.size)) {
-            val x = a.getOrElse(i) { 0 }
-            val y = b.getOrElse(i) { 0 }
-            if (x != y) return x > y
-        }
-        return false
+    private companion object {
+        val DAY_MS = TimeUnit.DAYS.toMillis(1)
     }
 }

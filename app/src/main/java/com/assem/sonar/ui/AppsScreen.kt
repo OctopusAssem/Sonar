@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.AcUnit
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
@@ -57,10 +58,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.assem.sonar.AppViewModel
 import com.assem.sonar.R
+import com.assem.sonar.data.FreezeManager
 import com.assem.sonar.model.AppEntry
 import com.assem.sonar.model.AppFilter
 import com.assem.sonar.model.SortMode
 import com.assem.sonar.model.UpdateState
+import com.assem.sonar.util.formatDate
 import com.assem.sonar.util.formatDateTime
 import com.assem.sonar.util.formatDuration
 import com.assem.sonar.util.formatSize
@@ -80,9 +83,13 @@ private fun sortLabel(mode: SortMode): String = when (mode) {
 @Composable
 fun AppsScreen(vm: AppViewModel) {
     val context = LocalContext.current
-    var selected by remember { mutableStateOf<AppEntry?>(null) }
+    var selectedPkg by remember { mutableStateOf<String?>(null) }
     var showSort by remember { mutableStateOf(false) }
     var confirmUninstall by remember { mutableStateOf<AppEntry?>(null) }
+    var confirmFreeze by remember { mutableStateOf<AppEntry?>(null) }
+    var confirmUnfreeze by remember { mutableStateOf<AppEntry?>(null) }
+
+    val selected = vm.apps.firstOrNull { it.info.packageName == selectedPkg }
 
     Column(Modifier.fillMaxSize()) {
         if (!vm.usageAccess) {
@@ -157,7 +164,9 @@ fun AppsScreen(vm: AppViewModel) {
                 contentPadding = PaddingValues(bottom = 24.dp),
             ) {
                 items(visible, key = { it.info.packageName }) { entry ->
-                    AppRow(entry, Icons.Default.Android) { selected = entry }
+                    AppRow(entry, Icons.Default.Android) {
+                        selectedPkg = entry.info.packageName
+                    }
                 }
             }
         }
@@ -165,11 +174,13 @@ fun AppsScreen(vm: AppViewModel) {
 
     selected?.let { entry ->
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ModalBottomSheet(onDismissRequest = { selected = null }, sheetState = sheetState) {
+        ModalBottomSheet(onDismissRequest = { selectedPkg = null }, sheetState = sheetState) {
             DetailContent(
                 entry = entry,
                 vm = vm,
-                onUninstall = { confirmUninstall = entry; selected = null },
+                onUninstall = { confirmUninstall = entry; selectedPkg = null },
+                onFreeze = { confirmFreeze = entry },
+                onUnfreeze = { confirmUnfreeze = entry },
             )
         }
     }
@@ -178,9 +189,7 @@ fun AppsScreen(vm: AppViewModel) {
         AlertDialog(
             onDismissRequest = { confirmUninstall = null },
             title = { Text(stringResource(R.string.uninstall_dialog_title)) },
-            text = {
-                Text(stringResource(R.string.uninstall_dialog_body, entry.info.label))
-            },
+            text = { Text(stringResource(R.string.uninstall_dialog_body, entry.info.label)) },
             confirmButton = {
                 TextButton(onClick = {
                     uninstall(context, entry.info.packageName)
@@ -189,6 +198,61 @@ fun AppsScreen(vm: AppViewModel) {
             },
             dismissButton = {
                 TextButton(onClick = { confirmUninstall = null }) {
+                    Text(stringResource(R.string.dialog_cancel))
+                }
+            },
+        )
+    }
+
+    confirmFreeze?.let { entry ->
+        val critical = FreezeManager.isCritical(entry.info.packageName)
+        AlertDialog(
+            onDismissRequest = { confirmFreeze = null },
+            title = { Text(stringResource(R.string.freeze_dialog_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(stringResource(R.string.freeze_dialog_body, entry.info.label))
+                    if (entry.info.isSystem) {
+                        Text(
+                            stringResource(
+                                if (critical) R.string.freeze_warning_critical
+                                else R.string.freeze_warning_system,
+                            ),
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    vm.freeze(entry)
+                    confirmFreeze = null
+                    selectedPkg = null
+                }) { Text(stringResource(R.string.freeze_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmFreeze = null }) {
+                    Text(stringResource(R.string.dialog_cancel))
+                }
+            },
+        )
+    }
+
+    confirmUnfreeze?.let { entry ->
+        AlertDialog(
+            onDismissRequest = { confirmUnfreeze = null },
+            title = { Text(stringResource(R.string.unfreeze_dialog_title)) },
+            text = { Text(stringResource(R.string.unfreeze_dialog_body, entry.info.label)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    vm.unfreeze(entry)
+                    confirmUnfreeze = null
+                    selectedPkg = null
+                }) { Text(stringResource(R.string.unfreeze_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmUnfreeze = null }) {
                     Text(stringResource(R.string.dialog_cancel))
                 }
             },
@@ -226,9 +290,14 @@ private fun DetailContent(
     entry: AppEntry,
     vm: AppViewModel,
     onUninstall: () -> Unit,
+    onFreeze: () -> Unit,
+    onUnfreeze: () -> Unit,
 ) {
     val context = LocalContext.current
     val info = entry.info
+    val busy = vm.freezeBusy == info.packageName
+    val frozen = !info.isEnabled
+
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -267,7 +336,14 @@ private fun DetailContent(
                     stringResource(R.string.label_type),
                     stringResource(if (info.isSystem) R.string.type_system else R.string.type_user),
                 )
+                KeyValue(
+                    stringResource(R.string.label_state),
+                    stringResource(if (frozen) R.string.state_frozen else R.string.state_active),
+                )
                 KeyValue(stringResource(R.string.label_uid), info.uid.toString())
+                (entry.update as? UpdateState.Available)?.let {
+                    KeyValue(stringResource(R.string.label_play_updated), formatDate(it.playUpdatedOn))
+                }
                 entry.usage?.let {
                     KeyValue(
                         stringResource(R.string.label_usage_time, vm.usageDays),
@@ -283,14 +359,18 @@ private fun DetailContent(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Column(Modifier.padding(12.dp)) {
+                Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
-                        stringResource(R.string.update_available, u.latestVersionName),
+                        stringResource(R.string.update_available_title),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        stringResource(R.string.source_label, u.source),
+                        stringResource(
+                            R.string.update_available_body,
+                            formatDate(u.playUpdatedOn),
+                            formatDate(info.lastUpdateTime),
+                        ),
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
@@ -308,23 +388,37 @@ private fun DetailContent(
             else -> Unit
         }
 
+        if (busy) {
+            Text(
+                stringResource(R.string.freeze_working),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = { vm.checkOne(info.packageName) }, modifier = Modifier.weight(1f)) {
+            Button(
+                onClick = { vm.checkOne(info.packageName) },
+                modifier = Modifier.weight(1f),
+                enabled = !busy,
+            ) {
                 Icon(Icons.Default.Refresh, contentDescription = null)
                 Text("  " + stringResource(R.string.action_check_update))
             }
             OutlinedButton(
                 onClick = { openApp(context, info.packageName) },
                 modifier = Modifier.weight(1f),
+                enabled = !frozen && !busy,
             ) {
                 Icon(Icons.AutoMirrored.Filled.OpenInNew, contentDescription = null)
-                Text("  " + stringResource(R.string.action_open))
+                Text("  " + stringResource(R.string.action_open_app))
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(
                 onClick = { openAppInfo(context, info.packageName) },
                 modifier = Modifier.weight(1f),
+                enabled = !busy,
             ) {
                 Icon(Icons.Default.Info, contentDescription = null)
                 Text("  " + stringResource(R.string.action_system_info))
@@ -332,24 +426,42 @@ private fun DetailContent(
             OutlinedButton(
                 onClick = { openPlayStore(context, info.packageName) },
                 modifier = Modifier.weight(1f),
+                enabled = !busy,
             ) {
                 Icon(Icons.Default.Shop, contentDescription = null)
                 Text("  " + stringResource(R.string.action_google_play))
             }
         }
-        Button(
-            onClick = onUninstall,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error,
-                contentColor = MaterialTheme.colorScheme.onError,
-            ),
-        ) {
-            Icon(Icons.Default.Delete, contentDescription = null)
-            Text("  " + stringResource(R.string.action_uninstall))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(
+                onClick = { if (frozen) onUnfreeze() else onFreeze() },
+                modifier = Modifier.weight(1f),
+                enabled = !busy,
+            ) {
+                Icon(Icons.Default.AcUnit, contentDescription = null)
+                Text(
+                    "  " + stringResource(
+                        if (frozen) R.string.action_unfreeze else R.string.action_freeze,
+                    ),
+                )
+            }
+            Button(
+                onClick = onUninstall,
+                modifier = Modifier.weight(1f),
+                enabled = !busy,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError,
+                ),
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = null)
+                Text("  " + stringResource(R.string.action_uninstall))
+            }
         }
     }
 }
+
+private const val PLAY_STORE_PACKAGE = "com.android.vending"
 
 fun openApp(context: Context, packageName: String) {
     val intent = context.packageManager.getLaunchIntentForPackage(packageName)
@@ -371,20 +483,31 @@ fun openAppInfo(context: Context, packageName: String) {
     }
 }
 
+/**
+ * Opens the app on **Google Play only**. The `market://` scheme is deliberately never used
+ * on its own, because other stores (Xiaomi GetApps, Samsung, Huawei…) also register for it.
+ */
 fun openPlayStore(context: Context, packageName: String) {
-    val market = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    val web = Intent(
+        Intent.ACTION_VIEW,
+        Uri.parse("https://play.google.com/store/apps/details?id=$packageName"),
+    ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+    // 1) The Play Store app handling its own https link.
+    runCatching { context.startActivity(Intent(web).setPackage(PLAY_STORE_PACKAGE)) }
+        .onSuccess { return }
+    // 2) The Play Store app handling market:// explicitly.
+    val market = Intent(
+        Intent.ACTION_VIEW,
+        Uri.parse("market://details?id=$packageName"),
+    ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    runCatching { context.startActivity(Intent(market).setPackage(PLAY_STORE_PACKAGE)) }
+        .onSuccess { return }
+    // 3) No Play Store installed: still Google Play, just in a browser.
     try {
-        context.startActivity(market)
+        context.startActivity(web)
     } catch (_: ActivityNotFoundException) {
-        runCatching {
-            context.startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/details?id=$packageName"),
-                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-            )
-        }
+        openAppInfo(context, packageName)
     }
 }
 

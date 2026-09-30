@@ -21,8 +21,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -82,6 +85,12 @@ private data class TabItem(val tab: Tab, val labelRes: Int, val icon: ImageVecto
 @Composable
 private fun RootScaffold(vm: AppViewModel) {
     var current by rememberSaveable { mutableStateOf(Tab.APPS) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(vm.message) {
+        val msg = vm.message ?: return@LaunchedEffect
+        snackbarHostState.showSnackbar(msg)
+        vm.clearMessage()
+    }
     val tabs = remember {
         listOf(
             TabItem(Tab.APPS, R.string.tab_apps, Icons.Default.Apps),
@@ -94,6 +103,7 @@ private fun RootScaffold(vm: AppViewModel) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
                 tabs.forEach { item ->

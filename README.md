@@ -23,6 +23,10 @@ you can open it, jump to its system info screen, open it on Google Play, or unin
 - **Freeze apps (root)** — disable an app without uninstalling it, keeping its data, and unfreeze
   it later. Requires root. Sonar asks your root manager for permission and shows a warning before
   freezing any system app.
+- **Request root on demand** — Sonar only asks for root when *you* ask for it: a “Request root
+  permission” button in the Root tab (and in Settings) brings up your root manager's grant prompt.
+  If you try to freeze an app before granting it, Sonar offers to request root and then retries the
+  freeze automatically once you approve.
 - **Update checks (Google Play only)** — reads each user app's public Google Play listing and
   compares its update date with the copy installed on your device. No other store is used. Check
   everything in-app, or enable an optional background check every 12 hours with a notification
@@ -37,7 +41,7 @@ you can open it, jump to its system info screen, open it on Google Play, or unin
   anywhere.
 
 ### Install
-Download `Sonar-1.0.apk` from the [Releases](../../releases) page and open it on your phone,
+Download `Sonar-1.2.apk` from the [Releases](../../releases) page and open it on your phone,
 allowing installation from unknown sources when asked.
 
 - Package: `com.assem.sonar`
@@ -55,7 +59,7 @@ Then align and sign the APK:
 
 ```bash
 zipalign -f -p 4 app/build/outputs/apk/release/app-release-unsigned.apk Sonar-aligned.apk
-apksigner sign --ks your.jks --out Sonar-1.0.apk Sonar-aligned.apk
+apksigner sign --ks your.jks --out Sonar-1.2.apk Sonar-aligned.apk
 ```
 
 ### Notes
@@ -84,6 +88,9 @@ apksigner sign --ks your.jks --out Sonar-1.0.apk Sonar-aligned.apk
   **Google Play فقط**، ولا يفتح أي متجر آخر مثبّت على الهاتف.
 - **تجميد التطبيقات (يحتاج root)** — تعطيل التطبيق بدون حذفه مع بقاء بياناته، وإلغاء تجميده لاحقًا.
   يحتاج صلاحية root، ويطلبها سونار من مدير الروت، ويعرض تحذيرًا قبل تجميد أي تطبيق نظام.
+- **طلب صلاحية الروت عند الحاجة** — لا يطلب سونار صلاحية الروت إلا عندما تطلبها أنت: زر «طلب صلاحية
+  الروت» في تبويب الروت (وفي الإعدادات) يُظهر نافذة الموافقة من مدير الروت. وإذا حاولت تجميد تطبيق قبل
+  منح الصلاحية، يعرض سونار طلبها ثم يعيد التجميد تلقائيًا بعد موافقتك.
 - **فحص التحديثات (من Google Play فقط)** — يقرأ صفحة كل تطبيق مستخدم على Google Play ويقارن تاريخ
   التحديث هناك بتاريخ النسخة على جهازك. لا يُستخدم أي متجر آخر. فحص فوري داخل التطبيق، أو فحص
   خلفي اختياري كل 12 ساعة مع إشعار عند وجود تحديث.
@@ -95,7 +102,7 @@ apksigner sign --ks your.jks --out Sonar-1.0.apk Sonar-aligned.apk
 - **خصوصية بالتصميم** — كل شيء يعمل على جهازك، ولا تُرسل أي بيانات عن تطبيقاتك لأي جهة.
 
 ### التثبيت
-نزّل `Sonar-1.0.apk` من صفحة [الإصدارات](../../releases) وافتحه على هاتفك، مع السماح بالتثبيت من
+نزّل `Sonar-1.2.apk` من صفحة [الإصدارات](../../releases) وافتحه على هاتفك، مع السماح بالتثبيت من
 مصادر غير معروفة عند الطلب.
 
 - اسم الحزمة: `com.assem.sonar`

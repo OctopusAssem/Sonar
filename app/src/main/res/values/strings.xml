@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sonar</string>
+
+    <!-- Tabs -->
+    <string name="tab_apps">Apps</string>
+    <string name="tab_updates">Updates</string>
+    <string name="tab_root">Root</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Apps screen -->
+    <string name="loading_apps">Loading apps…</string>
+    <string name="search_hint">Search by app name or package</string>
+    <string name="filter_all">All</string>
+    <string name="filter_user">User</string>
+    <string name="filter_system">System</string>
+    <string name="sort_by">Sort</string>
+    <string name="sort_name">Name</string>
+    <string name="sort_install">Install date</string>
+    <string name="sort_update">Last update</string>
+    <string name="sort_usage">Usage time</string>
+    <string name="sort_size">Size</string>
+    <plurals name="app_count">
+        <item quantity="one">%1$d app</item>
+        <item quantity="other">%1$d apps</item>
+    </plurals>
+    <string name="tap_app_hint">Tap an app for details</string>
+
+    <string name="usage_access_missing_title">Usage times unavailable</string>
+    <string name="usage_access_missing_body">To see how long each app is used, grant the “Usage access” permission from system settings.</string>
+    <string name="open_settings">Open settings</string>
+
+    <string name="badge_system">System</string>
+    <string name="badge_update">Update %1$s</string>
+    <string name="badge_checking">Checking…</string>
+    <string name="badge_uptodate">Up to date</string>
+
+    <string name="label_version">Version</string>
+    <string name="label_install_date">Install date</string>
+    <string name="label_last_update">Last update</string>
+    <string name="label_apk_size">APK file size</string>
+    <string name="label_type">Type</string>
+    <string name="label_uid">User ID (UID)</string>
+    <string name="label_usage_time">Usage (%1$d days)</string>
+    <string name="label_last_used">Last used</string>
+    <string name="type_system">System app</string>
+    <string name="type_user">User app</string>
+
+    <string name="update_available">Update available: %1$s</string>
+    <string name="source_label">Source: %1$s</string>
+    <string name="up_to_date_message">This app is up to date on the available source.</string>
+
+    <string name="action_check_update">Check update</string>
+    <string name="action_open">Open</string>
+    <string name="action_system_info">System info</string>
+    <string name="action_google_play">Google Play</string>
+    <string name="action_uninstall">Uninstall</string>
+
+    <string name="uninstall_dialog_title">Uninstall</string>
+    <string name="uninstall_dialog_body">The system uninstall screen for “%1$s” will open.</string>
+    <string name="dialog_continue">Continue</string>
+    <string name="dialog_cancel">Cancel</string>
+
+    <!-- Updates screen -->
+    <string name="updates_title">Update check</string>
+    <string name="updates_body">Compares each user app’s version with the latest release on Google Play (Aptoide is used as a fallback). System apps are not checked.</string>
+    <string name="updates_checking_progress">Checking %1$s</string>
+    <string name="updates_check_all">Check all</string>
+    <string name="updates_checked_count">Checked %1$d apps</string>
+    <string name="updates_checking_now">Checking…</string>
+    <string name="updates_none_yet">No updates found yet</string>
+    <string name="updates_internet_off">Internet access is turned off, so updates cannot be checked. Enable it in Settings.</string>
+
+    <!-- Root screen -->
+    <string name="root_header_idle">Simple root indicator scan</string>
+    <string name="root_header_found">%1$d root indicator(s) found</string>
+    <string name="root_header_clean">No clear root indicators</string>
+    <string name="root_body">A local, simple scan: su binaries, root command execution, root manager packages, Magisk/KernelSU/APatch paths, build properties and SELinux state. It is not a final verdict; advanced hiding can conceal all of these.</string>
+    <string name="root_start_scan">Start scan</string>
+    <string name="root_tap_to_start">Tap “Start scan” to see results</string>
+    <string name="root_status_found">Found</string>
+    <string name="root_status_clean">Clean</string>
+
+    <string name="rc_category_binaries">Binaries</string>
+    <string name="rc_category_exec">Execution</string>
+    <string name="rc_category_packages">Packages</string>
+    <string name="rc_category_paths">Paths</string>
+    <string name="rc_category_system">System</string>
+
+    <string name="rc_su_binaries">su binary in known paths</string>
+    <string name="rc_su_exec">Running “su -c id”</string>
+    <string name="rc_root_packages">Installed root manager apps</string>
+    <string name="rc_root_paths">Magisk / KernelSU / APatch paths</string>
+    <string name="rc_busybox">busybox</string>
+    <string name="rc_build_tags">test-keys build tag</string>
+    <string name="rc_props">ro.debuggable / ro.secure properties</string>
+    <string name="rc_selinux">SELinux permissive</string>
+
+    <string name="rc_none_found">Not found</string>
+    <string name="rc_none">None</string>
+    <string name="rc_exec_no_root">Executed without root: %1$s</string>
+    <string name="rc_exec_unavailable">Command unavailable</string>
+    <string name="rc_exec_error">Unavailable (%1$s)</string>
+    <string name="rc_selinux_unavailable">Unavailable</string>
+    <string name="rc_selinux_enforcing">Enforcing (normal)</string>
+    <string name="rc_selinux_permissive">Permissive (exposed)</string>
+
+    <!-- Settings -->
+    <string name="settings_usage_title">Usage access permission</string>
+    <string name="settings_granted">Granted ✓</string>
+    <string name="settings_not_granted">Not granted</string>
+    <string name="settings_usage_body">Used to show how long each app is used. It is granted from system settings, not from inside the app.</string>
+    <string name="settings_open_usage">Open usage access settings</string>
+
+    <string name="settings_period_title">Usage period</string>
+    <string name="settings_days">%1$d days</string>
+
+    <string name="settings_notifications_title">Update notifications</string>
+    <string name="settings_notif_granted">System notifications: allowed ✓</string>
+    <string name="settings_notif_denied">System notifications: denied</string>
+    <string name="settings_notif_legacy">System notifications: allowed (Android older than 13)</string>
+    <string name="settings_allow_notifications">Allow notifications</string>
+    <string name="settings_background_title">Periodic background check</string>
+    <string name="settings_background_body">Every 12 hours over a connected network (user apps only).</string>
+
+    <string name="settings_internet_title">Internet connection</string>
+    <string name="settings_internet_allow">Allow internet access</string>
+    <string name="settings_internet_body_on">The app may contact Google Play or Aptoide to look for updates.</string>
+    <string name="settings_internet_body_off">The app makes no network requests at all. Update checks are disabled.</string>
+
+    <string name="settings_language_title">Language</string>
+    <string name="language_system">System default</string>
+    <string name="language_arabic">العربية</string>
+    <string name="language_english">English</string>
+
+    <string name="settings_about_title">About</string>
+    <string name="about_name">Name</string>
+    <string name="about_package">Package</string>
+    <string name="about_version">Version</string>
+    <string name="about_developer">Developer</string>
+    <string name="about_developer_value">Assem Hussein</string>
+    <string name="about_body">Runs entirely on your device and sends no data about your apps anywhere. Root detection is indicative and simple only.</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_name">Update alerts</string>
+    <string name="notif_channel_description">Notifies you when an app update is available</string>
+    <string name="notif_title">%1$d update(s) available</string>
+
+    <!-- Update sources -->
+    <string name="source_play">Google Play</string>
+    <string name="source_aptoide">Aptoide</string>
+    <string name="update_source_unreachable">Could not reach the update source</string>
+    <string name="update_internet_disabled">Internet access is turned off</string>
+
+    <!-- Formatting -->
+    <string name="duration_hours_minutes">%1$d h %2$d m</string>
+    <string name="duration_minutes">%1$d m</string>
+    <string name="duration_seconds">%1$d s</string>
+    <string name="time_now">now</string>
+    <string name="time_minutes_ago">%1$d min</string>
+    <string name="time_hours_ago">%1$d h</string>
+    <string name="time_days_ago">%1$d d</string>
+</resources>

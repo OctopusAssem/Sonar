@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">سونار</string>
+
+    <!-- Tabs -->
+    <string name="tab_apps">التطبيقات</string>
+    <string name="tab_updates">التحديثات</string>
+    <string name="tab_root">الروت</string>
+    <string name="tab_settings">الإعدادات</string>
+
+    <!-- Apps screen -->
+    <string name="loading_apps">جارٍ تحميل التطبيقات…</string>
+    <string name="search_hint">ابحث باسم التطبيق أو الحزمة</string>
+    <string name="filter_all">الكل</string>
+    <string name="filter_user">المستخدم</string>
+    <string name="filter_system">النظام</string>
+    <string name="sort_by">ترتيب</string>
+    <string name="sort_name">الاسم</string>
+    <string name="sort_install">تاريخ التثبيت</string>
+    <string name="sort_update">آخر تحديث</string>
+    <string name="sort_usage">وقت الاستخدام</string>
+    <string name="sort_size">الحجم</string>
+    <plurals name="app_count">
+        <item quantity="zero">لا توجد تطبيقات</item>
+        <item quantity="one">تطبيق واحد</item>
+        <item quantity="two">تطبيقان</item>
+        <item quantity="few">%1$d تطبيقات</item>
+        <item quantity="many">%1$d تطبيقًا</item>
+        <item quantity="other">%1$d تطبيق</item>
+    </plurals>
+    <string name="tap_app_hint">اضغط أي تطبيق لعرض التفاصيل</string>
+
+    <string name="usage_access_missing_title">أوقات الاستخدام غير متاحة</string>
+    <string name="usage_access_missing_body">لمعرفة مدة استخدام كل تطبيق، امنح التطبيق صلاحية «الوصول لبيانات الاستخدام» من إعدادات النظام.</string>
+    <string name="open_settings">فتح الإعدادات</string>
+
+    <string name="badge_system">نظام</string>
+    <string name="badge_update">تحديث %1$s</string>
+    <string name="badge_checking">يفحص…</string>
+    <string name="badge_uptodate">محدّث</string>
+
+    <string name="label_version">الإصدار</string>
+    <string name="label_install_date">تاريخ التثبيت</string>
+    <string name="label_last_update">آخر تحديث</string>
+    <string name="label_apk_size">حجم ملف APK</string>
+    <string name="label_type">النوع</string>
+    <string name="label_uid">معرّف المستخدم (UID)</string>
+    <string name="label_usage_time">وقت الاستخدام (%1$d يوم)</string>
+    <string name="label_last_used">آخر استخدام</string>
+    <string name="type_system">تطبيق نظام</string>
+    <string name="type_user">تطبيق مستخدم</string>
+
+    <string name="update_available">يوجد تحديث: %1$s</string>
+    <string name="source_label">المصدر: %1$s</string>
+    <string name="up_to_date_message">التطبيق محدّث حسب المصدر المتاح.</string>
+
+    <string name="action_check_update">فحص التحديث</string>
+    <string name="action_open">فتح</string>
+    <string name="action_system_info">معلومات النظام</string>
+    <string name="action_google_play">متجر جوجل</string>
+    <string name="action_uninstall">إلغاء التثبيت</string>
+
+    <string name="uninstall_dialog_title">إلغاء التثبيت</string>
+    <string name="uninstall_dialog_body">سيتم فتح شاشة إلغاء تثبيت «%1$s» من النظام.</string>
+    <string name="dialog_continue">متابعة</string>
+    <string name="dialog_cancel">إلغاء</string>
+
+    <!-- Updates screen -->
+    <string name="updates_title">فحص التحديثات</string>
+    <string name="updates_body">يقارن إصدار كل تطبيق مستخدم مع أحدث إصدار على Google Play (ثم Aptoide كبديل). لا تُفحص تطبيقات النظام.</string>
+    <string name="updates_checking_progress">جارٍ الفحص %1$s</string>
+    <string name="updates_check_all">فحص الكل</string>
+    <string name="updates_checked_count">تم فحص %1$d تطبيق</string>
+    <string name="updates_checking_now">جارٍ الفحص…</string>
+    <string name="updates_none_yet">لا توجد تحديثات مرصودة حتى الآن</string>
+    <string name="updates_internet_off">الاتصال بالإنترنت متوقف، فلا يمكن فحص التحديثات. شغّله من الإعدادات.</string>
+
+    <!-- Root screen -->
+    <string name="root_header_idle">فحص بسيط لعلامات الروت</string>
+    <string name="root_header_found">توجد %1$d علامة روت</string>
+    <string name="root_header_clean">لا توجد علامات روت واضحة</string>
+    <string name="root_body">فحص محلي بسيط: ملفات su، تنفيذ أمر الجذر، حزم إدارة الروت، مسارات Magisk/KernelSU/APatch، خصائص البناء، وحالة SELinux. النتيجة ليست حكمًا نهائيًا؛ أنظمة الإخفاء المتقدمة قد تُخفي كل هذه العلامات.</string>
+    <string name="root_start_scan">بدء الفحص</string>
+    <string name="root_tap_to_start">اضغط «بدء الفحص» لعرض النتائج</string>
+    <string name="root_status_found">موجود</string>
+    <string name="root_status_clean">سليم</string>
+
+    <string name="rc_category_binaries">ثنائيات</string>
+    <string name="rc_category_exec">تنفيذ</string>
+    <string name="rc_category_packages">حزم</string>
+    <string name="rc_category_paths">مسارات</string>
+    <string name="rc_category_system">النظام</string>
+
+    <string name="rc_su_binaries">ملف su في مسارات معروفة</string>
+    <string name="rc_su_exec">تشغيل الأمر su -c id</string>
+    <string name="rc_root_packages">تطبيقات إدارة الروت المثبّتة</string>
+    <string name="rc_root_paths">مسارات Magisk / KernelSU / APatch</string>
+    <string name="rc_busybox">busybox</string>
+    <string name="rc_build_tags">علامة test-keys في البناء</string>
+    <string name="rc_props">خصائص ro.debuggable / ro.secure</string>
+    <string name="rc_selinux">SELinux غير مُلزِم (Permissive)</string>
+
+    <string name="rc_none_found">لم يوجد</string>
+    <string name="rc_none">لا يوجد</string>
+    <string name="rc_exec_no_root">نُفِّذ بدون صلاحية root: %1$s</string>
+    <string name="rc_exec_unavailable">الأمر غير متاح</string>
+    <string name="rc_exec_error">غير متاح (%1$s)</string>
+    <string name="rc_selinux_unavailable">غير متاح</string>
+    <string name="rc_selinux_enforcing">Enforcing (طبيعي)</string>
+    <string name="rc_selinux_permissive">Permissive (مكشوف)</string>
+
+    <!-- Settings -->
+    <string name="settings_usage_title">صلاحية أوقات الاستخدام</string>
+    <string name="settings_granted">ممنوحة ✓</string>
+    <string name="settings_not_granted">غير ممنوحة</string>
+    <string name="settings_usage_body">تُستخدم لعرض مدة استخدام كل تطبيق. تُمنح من إعدادات النظام وليس من داخل التطبيق.</string>
+    <string name="settings_open_usage">فتح إعدادات الوصول للاستخدام</string>
+
+    <string name="settings_period_title">فترة حساب الاستخدام</string>
+    <string name="settings_days">%1$d يوم</string>
+
+    <string name="settings_notifications_title">تنبيهات التحديث</string>
+    <string name="settings_notif_granted">إشعارات النظام: مسموحة ✓</string>
+    <string name="settings_notif_denied">إشعارات النظام: مرفوضة</string>
+    <string name="settings_notif_legacy">إشعارات النظام: مسموحة (إصدار أندرويد أقدم من 13)</string>
+    <string name="settings_allow_notifications">السماح بالإشعارات</string>
+    <string name="settings_background_title">فحص خلفي دوري</string>
+    <string name="settings_background_body">كل 12 ساعة عبر شبكة متصلة (تطبيقات المستخدم فقط).</string>
+
+    <string name="settings_internet_title">الاتصال بالإنترنت</string>
+    <string name="settings_internet_allow">السماح بالاتصال بالإنترنت</string>
+    <string name="settings_internet_body_on">قد يتصل التطبيق بـ Google Play أو Aptoide للبحث عن التحديثات.</string>
+    <string name="settings_internet_body_off">لا يقوم التطبيق بأي اتصال بالشبكة إطلاقًا، وفحص التحديثات متوقف.</string>
+
+    <string name="settings_language_title">اللغة</string>
+    <string name="language_system">لغة النظام</string>
+    <string name="language_arabic">العربية</string>
+    <string name="language_english">English</string>
+
+    <string name="settings_about_title">عن التطبيق</string>
+    <string name="about_name">الاسم</string>
+    <string name="about_package">الحزمة</string>
+    <string name="about_version">الإصدار</string>
+    <string name="about_developer">المطوّر</string>
+    <string name="about_developer_value">عاصم حسين</string>
+    <string name="about_body">يعمل التطبيق محليًا على جهازك، ولا يرسل بيانات تطبيقاتك لأي جهة. فحص الروت إرشادي وبسيط فقط.</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_name">تنبيهات التحديثات</string>
+    <string name="notif_channel_description">إشعار عند توفّر تحديث لأحد التطبيقات</string>
+    <string name="notif_title">يوجد %1$d تحديث متاح</string>
+
+    <!-- Update sources -->
+    <string name="source_play">Google Play</string>
+    <string name="source_aptoide">Aptoide</string>
+    <string name="update_source_unreachable">تعذّر الوصول لمصدر التحديث</string>
+    <string name="update_internet_disabled">الاتصال بالإنترنت متوقف</string>
+
+    <!-- Formatting -->
+    <string name="duration_hours_minutes">%1$d س %2$d د</string>
+    <string name="duration_minutes">%1$d د</string>
+    <string name="duration_seconds">%1$d ث</string>
+    <string name="time_now">الآن</string>
+    <string name="time_minutes_ago">%1$d دقيقة</string>
+    <string name="time_hours_ago">%1$d ساعة</string>
+    <string name="time_days_ago">%1$d يوم</string>
+</resources>

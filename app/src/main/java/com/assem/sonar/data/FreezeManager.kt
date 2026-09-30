@@ -54,8 +54,17 @@ object FreezeManager {
         packageName in criticalPackages || criticalPrefixes.any { packageName.startsWith(it) }
 
     /** True when a root shell answers as uid 0. Shows the root manager prompt on first use. */
-    fun hasRoot(): Boolean {
-        val r = runSu("id")
+    fun hasRoot(): Boolean = requestRoot()
+
+    /**
+     * Explicitly asks the root manager for access and waits for the user's answer.
+     *
+     * Running `su` is what makes KernelSU / Magisk / APatch show their grant dialog, so this is
+     * the "request root permission" action. The timeout is long enough for the user to read and
+     * answer the prompt before it is treated as denied.
+     */
+    fun requestRoot(timeoutMs: Long = 60_000L): Boolean {
+        val r = runSu("id", timeoutMs)
         return r.code == 0 && r.output.contains("uid=0")
     }
 

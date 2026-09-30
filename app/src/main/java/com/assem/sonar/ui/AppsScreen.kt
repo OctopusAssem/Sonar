@@ -258,6 +258,25 @@ fun AppsScreen(vm: AppViewModel) {
             },
         )
     }
+
+    // Freezing needs root: offer to ask the root manager right away, then retry the freeze.
+    vm.rootPromptEntry?.let { entry ->
+        AlertDialog(
+            onDismissRequest = { vm.dismissRootPrompt() },
+            title = { Text(stringResource(R.string.root_request_dialog_title)) },
+            text = { Text(stringResource(R.string.root_request_dialog_body, entry.info.label)) },
+            confirmButton = {
+                TextButton(onClick = { vm.requestRootPermission(entry) }) {
+                    Text(stringResource(R.string.root_request_dialog_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { vm.dismissRootPrompt() }) {
+                    Text(stringResource(R.string.dialog_cancel))
+                }
+            },
+        )
+    }
 }
 
 @Composable

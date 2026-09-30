@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.GppGood
 import androidx.compose.material.icons.filled.GppMaybe
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -31,12 +32,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.assem.sonar.AppViewModel
 import com.assem.sonar.R
+import com.assem.sonar.RootRequestState
 import com.assem.sonar.model.RootCheckResult
 
 @Composable
 fun RootScreen(vm: AppViewModel) {
     val detected = vm.rootResults.count { it.detected }
     Column(Modifier.fillMaxSize()) {
+        RootAccessCard(vm)
         Card(
             modifier = Modifier.fillMaxWidth().padding(12.dp),
             colors = CardDefaults.cardColors(
@@ -92,6 +95,59 @@ fun RootScreen(vm: AppViewModel) {
                 contentPadding = PaddingValues(bottom = 24.dp),
             ) {
                 items(vm.rootResults) { result -> RootResultRow(result) }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RootAccessCard(vm: AppViewModel) {
+    val granted = vm.rootAvailable == true
+    val requesting = vm.rootRequestState == RootRequestState.REQUESTING
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (granted) {
+                MaterialTheme.colorScheme.primaryContainer
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            },
+        ),
+    ) {
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Icon(Icons.Default.Lock, contentDescription = null, modifier = Modifier.size(24.dp))
+                Text(
+                    stringResource(R.string.root_access_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+            Text(
+                when {
+                    requesting -> stringResource(R.string.root_request_requesting)
+                    granted -> stringResource(R.string.root_request_granted)
+                    vm.rootRequestState == RootRequestState.DENIED ->
+                        stringResource(R.string.root_request_denied)
+                    else -> stringResource(R.string.root_access_body)
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = if (granted) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+            )
+            if (requesting) {
+                LinearProgressIndicator(Modifier.fillMaxWidth())
+            } else {
+                Button(onClick = { vm.requestRootPermission() }) {
+                    Icon(Icons.Default.Lock, contentDescription = null)
+                    Text("  " + stringResource(R.string.root_request_button))
+                }
             }
         }
     }

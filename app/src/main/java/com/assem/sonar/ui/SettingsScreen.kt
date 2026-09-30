@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.assem.sonar.AppViewModel
 import com.assem.sonar.R
+import com.assem.sonar.RootRequestState
 import com.assem.sonar.notify.Notifications
 import com.assem.sonar.util.LocaleHelper
 
@@ -120,13 +121,13 @@ fun SettingsScreen(vm: AppViewModel) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (vm.rootChecking) {
+            if (vm.rootRequestState == RootRequestState.REQUESTING) {
                 Text(
-                    stringResource(R.string.freeze_checking_root),
+                    stringResource(R.string.root_request_requesting),
                     style = MaterialTheme.typography.labelMedium,
                 )
             } else {
-                OutlinedButton(onClick = { vm.checkRootAccess() }) {
+                OutlinedButton(onClick = { vm.requestRootPermission() }) {
                     Text(stringResource(R.string.settings_root_request))
                 }
             }

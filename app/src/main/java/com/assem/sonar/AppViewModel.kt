@@ -22,6 +22,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/** State of an explicit "request root permission" action. */
+enum class RootRequestState { IDLE, REQUESTING, GRANTED, DENIED }
+
 class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     private val repo = AppRepository(app)
@@ -65,6 +68,14 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     var rootAvailable by mutableStateOf<Boolean?>(null)
         private set
     var rootChecking by mutableStateOf(false)
+        private set
+
+    /** Result of the explicit "request root permission" action. */
+    var rootRequestState by mutableStateOf(RootRequestState.IDLE)
+        private set
+
+    /** App whose freeze is waiting for the user to grant root; drives the "ask for root" dialog. */
+    var rootPromptEntry by mutableStateOf<AppEntry?>(null)
         private set
 
     /** Package currently being frozen or unfrozen. */
@@ -168,6 +179,33 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun dismissRootPrompt() {
+        rootPromptEntry = null
+    }
+
+    /**
+     * Asks the root manager for access on the user's request.
+     *
+     * [retry] is the app whose freeze triggered the request; when root is granted the freeze is
+     * retried automatically so the user does not have to tap again.
+     */
+    fun requestRootPermission(retry: AppEntry? = null) {
+        if (rootRequestState == RootRequestState.REQUESTING) return
+        rootPromptEntry = null
+        viewModelScope.launch {
+            rootRequestState = RootRequestState.REQUESTING
+            val granted = withContext(Dispatchers.IO) { FreezeManager.requestRoot() }
+            rootRequestState = if (granted) RootRequestState.GRANTED else RootRequestState.DENIED
+            rootAvailable = granted
+            if (granted) {
+                message = localized.getString(R.string.root_request_granted)
+                if (retry != null) changeFrozenState(retry, freeze = true)
+            } else {
+                message = localized.getString(R.string.root_request_denied)
+            }
+        }
+    }
+
     fun freeze(entry: AppEntry) = changeFrozenState(entry, freeze = true)
 
     fun unfreeze(entry: AppEntry) = changeFrozenState(entry, freeze = false)
@@ -185,6 +223,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
                 if (freeze) FreezeManager.freeze(pkg) else FreezeManager.unfreeze(pkg)
             }
             freezeBusy = null
+            if (result is FreezeManager.Result.NoRoot) rootPromptEntry = entry
             message = when (result) {
                 is FreezeManager.Result.Success -> localized.getString(
                     if (freeze) R.string.freeze_success else R.string.unfreeze_success,

@@ -106,6 +106,17 @@
     <string name="root_status_found">Found</string>
     <string name="root_status_clean">Clean</string>
 
+    <!-- Root access request -->
+    <string name="root_access_title">Root access</string>
+    <string name="root_access_body">Sonar asks for root only when you request it. Granting it from your root manager (KernelSU, Magisk, APatch) is what enables freezing and unfreezing apps.</string>
+    <string name="root_request_button">Request root permission</string>
+    <string name="root_request_requesting">Waiting for the root manager prompt…</string>
+    <string name="root_request_granted">Root access granted ✓</string>
+    <string name="root_request_denied">Root access was not granted</string>
+    <string name="root_request_dialog_title">Root permission needed</string>
+    <string name="root_request_dialog_body">Freezing “%1$s” needs root access. Ask your root manager to grant it to Sonar now?</string>
+    <string name="root_request_dialog_confirm">Request root</string>
+
     <string name="rc_category_binaries">Binaries</string>
     <string name="rc_category_exec">Execution</string>
     <string name="rc_category_packages">Packages</string>
@@ -145,7 +156,7 @@
     <string name="settings_root_denied">Root access: not granted</string>
     <string name="settings_root_unknown">Root access: not checked yet</string>
     <string name="settings_root_body">Needed only to freeze and unfreeze apps. Nothing else uses root.</string>
-    <string name="settings_root_request">Check root access</string>
+    <string name="settings_root_request">Request root permission</string>
 
     <string name="settings_notifications_title">Update notifications</string>
     <string name="settings_notif_granted">System notifications: allowed ✓</string>

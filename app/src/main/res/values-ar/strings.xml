@@ -110,6 +110,17 @@
     <string name="root_status_found">موجود</string>
     <string name="root_status_clean">سليم</string>
 
+    <!-- Root access request -->
+    <string name="root_access_title">صلاحية الروت</string>
+    <string name="root_access_body">لا يطلب سونار صلاحية الروت إلا عندما تطلبها أنت. منحها من مدير الروت (KernelSU أو Magisk أو APatch) هو ما يسمح بتجميد التطبيقات وإلغاء تجميدها.</string>
+    <string name="root_request_button">طلب صلاحية الروت</string>
+    <string name="root_request_requesting">بانتظار موافقتك في مدير الروت…</string>
+    <string name="root_request_granted">تم منح صلاحية الروت ✓</string>
+    <string name="root_request_denied">لم تُمنح صلاحية الروت</string>
+    <string name="root_request_dialog_title">صلاحية الروت مطلوبة</string>
+    <string name="root_request_dialog_body">تجميد «%1$s» يحتاج صلاحية روت. هل تريد أن يطلب سونار من مدير الروت منحها الآن؟</string>
+    <string name="root_request_dialog_confirm">طلب الروت</string>
+
     <string name="rc_category_binaries">ثنائيات</string>
     <string name="rc_category_exec">تنفيذ</string>
     <string name="rc_category_packages">حزم</string>
@@ -149,7 +160,7 @@
     <string name="settings_root_denied">صلاحية root: غير ممنوحة</string>
     <string name="settings_root_unknown">صلاحية root: لم يتم التحقق بعد</string>
     <string name="settings_root_body">تُحتاج فقط لتجميد التطبيقات وإلغاء تجميدها، ولا يستخدمها التطبيق في أي شيء آخر.</string>
-    <string name="settings_root_request">التحقق من صلاحية root</string>
+    <string name="settings_root_request">طلب صلاحية الروت</string>
 
     <string name="settings_notifications_title">تنبيهات التحديث</string>
     <string name="settings_notif_granted">إشعارات النظام: مسموحة ✓</string>
